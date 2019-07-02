@@ -1,0 +1,13 @@
+page_json_content:
+  path: '/page_json/{apikey}/{node}'
+  defaults:
+    _controller: 'Drupal\siteapikey\Controller\SiteApiKeyController::nodeToJson'
+  methods: [GET]
+  requirements:
+    _custom_access: 'Drupal\siteapikey\Controller\SiteApiKeyController::accessCheck'
+    _format: 'json'
+  options:
+    parameters:
+      node:
+        type: entity:node
+        load_latest_revision: TRUE

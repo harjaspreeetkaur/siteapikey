@@ -1,0 +1,7 @@
+name: 'Site Api Key'
+type: module
+description: 'Insert or Update Site api key'
+package: Custom
+core: 8.x
+dependencies:
+  - drupal:serialization

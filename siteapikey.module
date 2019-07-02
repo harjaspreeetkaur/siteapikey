@@ -1,0 +1,52 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function siteapikey_form_system_site_information_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $api_key = \Drupal::config('site.api')->get('key');
+
+	$form['siteapikey'] = array(
+	  '#type' => 'textfield',
+		'#title' => t('Site Api Key'),
+		'#default_value'=> !empty($api_key) ? $api_key : t('No Api Key Yet')
+	);
+
+	// Add submit handler to submit button
+	$form['actions']['submit']['#submit'][] = 'siteapikey_submit';
+
+	if (!empty($api_key)) {
+		$form['actions']['submit']['#value'] = t('Update Configuration');
+	}
+}
+
+/**
+ * Custom submit handler for system site information form.
+ *
+ * @param $form
+ * @param FormStateInterface $form_state
+ */
+function siteapikey_submit(&$form, FormStateInterface $form_state) {
+	$siteapikey = $form_state->getValue('siteapikey');
+
+	try {
+	  $config = \Drupal::service('config.factory')->getEditable('site.api');
+
+	  if (!$config->set('key', $siteapikey) || !$config->save()) {
+      $error = 'Configuration could not be saved';
+    }
+  }
+  catch (Exception $e) {
+	  $error = $e->getMessage();
+  }
+
+  if (isset($error)) {
+    \Drupal::messenger()->addError(t($error));
+  }
+  else {
+    \Drupal::messenger()->addMessage(t('Settings saved successfully'), 'status', TRUE);
+  }
+}
