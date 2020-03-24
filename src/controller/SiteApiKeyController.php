@@ -32,7 +32,7 @@ class SiteApiKeyController {
   }
 
   private function validateNode($node) {
-    return $node->type->entity->label() == 'Custom Page';
+    return $node->bundle() == 'page';
   }
 
   /**
